@@ -1,17 +1,18 @@
 import Note from "./Note";
 
-export default function NoteList({ notes, onNoteSelect, noteContentMap, setNoteContentMap }) {
-    return(
+export default function NoteList({ notes, onNoteSelect, noteContentMap, setNoteContentMap, selectedNote }) {
+    return (
         <div className="list-group">
             {notes.map((note) => (
                 <Note
-                key={note.id}
-                note={note}
-                content={noteContentMap[note.id]}
-                onNoteSelect={() => onNoteSelect(note)}
-                setNoteContent={(content) => setNoteContentMap({ ...noteContentMap, [note.id]: content })}
+                    key={note.id}
+                    note={note}
+                    content={noteContentMap[note.id] || 'nieuwe notitie'}
+                    onNoteSelect={() => onNoteSelect(note)}
+                    isActive={selectedNote && note.id === selectedNote.id}
+                    setNoteContent={(content) => setNoteContentMap({ ...noteContentMap, [note.id]: content })}
                 />
             ))}
-    </div>
+        </div>
     );
 }

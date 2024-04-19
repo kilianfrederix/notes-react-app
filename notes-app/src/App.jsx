@@ -11,14 +11,14 @@ function App() {
   const [noteContentMap, setNoteContentMap] = useState({});
 
   const handleAddNote = () => {
-    const newNote = { id: crypto.randomUUID(), content: 'Nieuwe notitie', favorite: false };
+    const newNote = { id: crypto.randomUUID(), content: '', favorite: false };
     setNotes([newNote, ...notes]);
     setSelectedNote(newNote);
     setNoteContentMap({ ...noteContentMap, [newNote.id]: '' });
   };
 
   const handleDeleteNote = () => {
-    if (selectedNote) {
+    if (selectedNote && selectedNote.id) {
       setNotes(notes.filter((note) => note.id !== selectedNote.id));
       setSelectedNote(null);
       const { [selectedNote.id]: deletedNoteContent, ...remainingContentMap } = noteContentMap;
@@ -26,14 +26,18 @@ function App() {
     }
   };
 
+
   const handleToggleFavorite = () => {
     if (selectedNote) {
       const updatedNotes = notes.map((note) =>
         note.id === selectedNote.id ? { ...note, favorite: !note.favorite } : note
       );
       setNotes(updatedNotes);
+
+      setSelectedNote({ ...selectedNote, favorite: !selectedNote.favorite });
     }
   };
+
 
   const handleFilterNotes = (type) => {
     setFilterType(type);
@@ -48,7 +52,7 @@ function App() {
   const filteredNotes = filterType === 'favorites' ? notes.filter((note) => note.favorite) : notes;
 
   return (
-    <div className="App">
+    <div id="app">
       <Toolbar
         onAddNote={handleAddNote}
         onDeleteNote={handleDeleteNote}
@@ -57,37 +61,42 @@ function App() {
         selectedNote={selectedNote}
         hasNotes={notes.length > 0}
       />
-      <div id="list-header">
-        <h2>Notes</h2>
-        <div className="btn-group btn-group-justified">
-          <div className="btn-group">
-            <button
-              type="button"
-              className={`btn btn-default ${filterType === 'all' ? 'active' : ''}`}
-              onClick={() => handleFilterNotes('all')}
-              disabled={notes.length === 0}
-            >
-              All notes
-            </button>
-          </div>
-          <div className="btn-group">
-            <button
-              type="button"
-              className={`btn btn-default ${filterType === 'favorites' ? 'active' : ''}`}
-              onClick={() => handleFilterNotes('favorites')}
-              disabled={!notes.some((note) => note.favorite)}
-            >
-              Favorites
-            </button>
+      <div id='notes-list'>
+        <div id="list-header">
+          <h2>Notes</h2>
+          <div className="btn-group btn-group-justified">
+            <div className="btn-group">
+              <button
+                type="button"
+                className={`btn btn-default ${filterType === 'all' ? 'active' : ''}`}
+                onClick={() => handleFilterNotes('all')}
+                disabled={notes.length === 0}
+              >
+                All notes
+              </button>
+            </div>
+            <div className="btn-group">
+              <button
+                type="button"
+                className={`btn btn-default ${filterType === 'favorites' ? 'active' : ''}`}
+                onClick={() => handleFilterNotes('favorites')}
+                disabled={!notes.some((note) => note.favorite)}
+              >
+                Favorites
+              </button>
+            </div>
           </div>
         </div>
+        <NoteList
+          notes={filteredNotes}
+          selectedNote={selectedNote}
+          onNoteSelect={setSelectedNote}
+          noteContentMap={noteContentMap}
+          setNoteContentMap={setNoteContentMap}
+        />
       </div>
-      <NoteList
-        notes={filteredNotes}
-        onNoteSelect={setSelectedNote}
-        noteContentMap={noteContentMap}
-        setNoteContentMap={setNoteContentMap}
-      />
+
+
       <div id="note-editor">
         <textarea
           placeholder="New Note"
