@@ -7,7 +7,7 @@ export default function NoteList({ notes, onNoteSelect, noteContentMap, setNoteC
                 <Note
                     key={note.id}
                     note={note}
-                    content={noteContentMap[note.id] || 'nieuwe notitie'}
+                    content={noteContentMap[note.id] || 'nieuwe noie'}
                     onNoteSelect={() => onNoteSelect(note)}
                     isActive={selectedNote && note.id === selectedNote.id}
                     setNoteContent={(content) => setNoteContentMap({ ...noteContentMap, [note.id]: content })}
