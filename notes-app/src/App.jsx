@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Toolbar from './components/Toolbar';
 import NoteList from './components/NoteList';
+import ListHeader from './components/ListHeader';
 import './App.css';
 
 function App() {
@@ -62,31 +63,12 @@ function App() {
         hasNotes={notes.length > 0}
       />
       <div id='notes-list'>
-        <div id="list-header">
-          <h2>Notes</h2>
-          <div className="btn-group btn-group-justified">
-            <div className="btn-group">
-              <button
-                type="button"
-                className={`btn btn-default ${filterType === 'all' ? 'active' : ''}`}
-                onClick={() => handleFilterNotes('all')}
-                disabled={notes.length === 0}
-              >
-                All notes
-              </button>
-            </div>
-            <div className="btn-group">
-              <button
-                type="button"
-                className={`btn btn-default ${filterType === 'favorites' ? 'active' : ''}`}
-                onClick={() => handleFilterNotes('favorites')}
-                disabled={!notes.some((note) => note.favorite)}
-              >
-                Favorites
-              </button>
-            </div>
-          </div>
-        </div>
+        <ListHeader
+          note={notes}
+          filterType={filterType}
+          onFilterNotes={handleFilterNotes}
+        />
+
         <NoteList
           notes={filteredNotes}
           selectedNote={selectedNote}
@@ -95,7 +77,6 @@ function App() {
           setNoteContentMap={setNoteContentMap}
         />
       </div>
-
 
       <div id="note-editor">
         <textarea
